@@ -45,7 +45,7 @@ async function scrapeApify(handle) {
   const res = await fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ usernames: [handle], resultsLimit: POSTS_TO_AVERAGE }),
+    body: JSON.stringify({ usernames: [handle] }),
   });
   if (!res.ok) throw new Error(`Apify run failed: ${res.status}`);
 
