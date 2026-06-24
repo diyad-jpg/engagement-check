@@ -7,7 +7,7 @@ const supabase = createClient(
 
 const APIFY_ACTOR = "apify~instagram-profile-scraper";
 const CACHE_TTL_HOURS = 24 * 7;
-const POSTS_TO_AVERAGE = 12;
+const POSTS_TO_AVERAGE = 20;
 
 function handleFromUrl(url) {
   try {
@@ -35,7 +35,9 @@ async function scrapeApify(handle) {
   const profile = items[0];
   const followers = Number(profile.followersCount ?? 0);
   const posts = Array.isArray(profile.latestPosts) ? profile.latestPosts : [];
-  const recent = posts.slice(0, POSTS_TO_AVERAGE);
+  const unpinned = posts.filter(p => !p.isPinned);
+  const pool = unpinned.length >= 5 ? unpinned : posts;
+  const recent = pool.slice(0, POSTS_TO_AVERAGE);
   if (!recent.length) throw new Error("No posts found");
 
   const avg = (key) =>
